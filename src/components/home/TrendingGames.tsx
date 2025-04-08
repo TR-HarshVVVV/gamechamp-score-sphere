@@ -17,7 +17,7 @@ const TRENDING_GAMES = [
   {
     id: 2,
     title: 'Dragon Quest Legends',
-    imageUrl: 'https://images.unsplash.com/photo-1642160204738-87292c378468?auto=format&fit=crop&w=600&h=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&h=400&q=80',
     players: 10891,
     trending: true,
     category: 'RPG'
