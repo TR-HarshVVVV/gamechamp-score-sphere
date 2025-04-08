@@ -9,7 +9,7 @@ const TRENDING_GAMES = [
   {
     id: 1,
     title: 'Cosmic Warfare',
-    imageUrl: 'https://source.unsplash.com/300x200/?space,game',
+    imageUrl: 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=600&h=400&q=80',
     players: 14523,
     trending: true,
     category: 'FPS'
@@ -17,7 +17,7 @@ const TRENDING_GAMES = [
   {
     id: 2,
     title: 'Dragon Quest Legends',
-    imageUrl: 'https://source.unsplash.com/300x200/?dragon,fantasy',
+    imageUrl: 'https://images.unsplash.com/photo-1642160204738-87292c378468?auto=format&fit=crop&w=600&h=400&q=80',
     players: 10891,
     trending: true,
     category: 'RPG'
@@ -25,7 +25,7 @@ const TRENDING_GAMES = [
   {
     id: 3,
     title: 'Velocity Racer',
-    imageUrl: 'https://source.unsplash.com/300x200/?racing,car',
+    imageUrl: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=600&h=400&q=80',
     players: 9076,
     trending: false,
     category: 'Racing'
@@ -33,7 +33,7 @@ const TRENDING_GAMES = [
   {
     id: 4,
     title: 'Tactical Ops',
-    imageUrl: 'https://source.unsplash.com/300x200/?tactical,military',
+    imageUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&h=400&q=80',
     players: 12345,
     trending: true,
     category: 'Strategy'

@@ -46,20 +46,20 @@ const HeroSection = () => {
           <div className="mt-16 flex justify-center animate-scale-in" style={{ animationDelay: '300ms' }}>
             <div className="relative w-full max-w-5xl aspect-video rounded-xl border border-white/10 overflow-hidden shadow-xl bg-gradient-to-br from-game-muted to-game-background">
               <div className="absolute inset-0 flex items-center justify-center text-center p-6">
-                <div className="glass-panel w-full max-w-md py-8 px-6">
+                <div className="glass-panel w-full max-w-md py-8 px-6 backdrop-blur-lg">
                   <h3 className="text-2xl font-bold mb-2 text-white">Featured Leaderboard</h3>
                   <p className="text-sm text-white/70 mb-6">Updated in real-time</p>
                   
                   <div className="space-y-2">
-                    <div className="flex justify-between p-2 rounded bg-white/5">
+                    <div className="flex justify-between p-2 rounded bg-white/10">
                       <span className="font-medium text-game-secondary">1. NinjaWarrior</span>
                       <span>98,540</span>
                     </div>
-                    <div className="flex justify-between p-2 rounded bg-white/5">
+                    <div className="flex justify-between p-2 rounded bg-white/10">
                       <span className="font-medium text-game-secondary">2. EpicGamer42</span>
                       <span>87,220</span>
                     </div>
-                    <div className="flex justify-between p-2 rounded bg-white/5">
+                    <div className="flex justify-between p-2 rounded bg-white/10">
                       <span className="font-medium text-game-secondary">3. ProSniper</span>
                       <span>76,890</span>
                     </div>
