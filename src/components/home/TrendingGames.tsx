@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, TrendingUp, Fire, Star, Trophy } from 'lucide-react';
+import { Users, TrendingUp, Flame, Star, Trophy } from 'lucide-react';
 
 const TRENDING_GAMES = [
   {
@@ -69,7 +69,7 @@ const TrendingGames = () => {
                   Trending Games
                 </span>
               </h2>
-              <Fire className="h-6 w-6 text-orange-500 animate-pulse" />
+              <Flame className="h-6 w-6 text-orange-500 animate-pulse" />
             </div>
             <p className="text-muted-foreground">The most popular games people are submitting scores for</p>
           </div>
