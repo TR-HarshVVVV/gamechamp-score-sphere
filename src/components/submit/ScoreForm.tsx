@@ -51,6 +51,7 @@ const ScoreForm = () => {
     defaultValues: {
       playerName: "",
       score: undefined,
+      game: undefined,
     },
   });
 
@@ -61,7 +62,14 @@ const ScoreForm = () => {
     setTimeout(() => {
       console.log("Submitted score:", data);
       toast.success("Score submitted successfully!");
-      form.reset();
+      
+      // Reset the form properly with complete defaultValues
+      form.reset({
+        playerName: "",
+        score: undefined,
+        game: undefined,
+      });
+      
       setIsSubmitting(false);
     }, 1500);
   };
@@ -76,7 +84,7 @@ const ScoreForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Game</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="bg-card border-border">
                       <SelectValue placeholder="Select a game" />
