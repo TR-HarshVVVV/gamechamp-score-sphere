@@ -2,14 +2,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { GameController, Trophy, BarChart2, User } from 'lucide-react';
+import { Gamepad2, Trophy, BarChart2, User } from 'lucide-react';
 
 const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 w-full backdrop-blur-lg bg-background/70 border-b border-border">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <GameController className="h-6 w-6 text-game-primary" />
+          <Gamepad2 className="h-6 w-6 text-game-primary" />
           <span className="text-xl font-bold bg-gradient-to-r from-game-primary to-game-secondary bg-clip-text text-transparent">
             GameChamp
           </span>
