@@ -11,10 +11,6 @@ const HeroSection = () => {
       
       <div className="container px-4 mx-auto relative z-10">
         <div className="flex flex-col items-center text-center">
-          <div className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 mb-8 animate-fade-in">
-            <span className="text-xs font-medium text-primary">New! Real-Time Updates</span>
-          </div>
-          
           <h1 className="max-w-4xl mb-6 animate-slide-in">
             <span className="bg-gradient-to-r from-game-primary via-game-accent to-game-secondary bg-clip-text text-transparent">
               Track, Compare & Dominate
