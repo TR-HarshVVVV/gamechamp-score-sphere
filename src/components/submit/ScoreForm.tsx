@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Form,
@@ -45,9 +44,6 @@ export const GAMES = [
   "Medieval Kingdom"
 ];
 
-// Event bus for real-time updates
-export const scoreSubmitEvent = new CustomEvent('scoreSubmitted', { detail: null });
-
 const ScoreForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -83,8 +79,12 @@ const ScoreForm = () => {
       const updatedScores = [...existingScores, newScoreEntry];
       localStorage.setItem('leaderboardScores', JSON.stringify(updatedScores));
       
-      // Create and dispatch custom event with the new score
-      scoreSubmitEvent.detail = newScoreEntry;
+      // Create a new custom event with the score data
+      const scoreSubmitEvent = new CustomEvent('scoreSubmitted', { 
+        detail: newScoreEntry 
+      });
+      
+      // Dispatch the event
       window.dispatchEvent(scoreSubmitEvent);
       
       toast.success("Score submitted successfully!");
