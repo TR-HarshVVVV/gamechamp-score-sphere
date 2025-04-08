@@ -4,17 +4,9 @@ import Layout from '@/components/layout/Layout';
 import LeaderboardTable, { ScoreEntry } from '@/components/leaderboard/LeaderboardTable';
 import GameFilter from '@/components/leaderboard/GameFilter';
 import { useSearchParams } from 'react-router-dom';
+import { GAMES } from '@/components/submit/ScoreForm';
 
 // Sample leaderboard data
-const GAMES = [
-  "Cosmic Warfare",
-  "Dragon Quest Legends",
-  "Velocity Racer",
-  "Tactical Ops",
-  "Zombie Survival",
-  "Medieval Kingdom"
-];
-
 const SAMPLE_DATA: ScoreEntry[] = [
   { id: '1', rank: 1, player: 'NinjaWarrior', game: 'Cosmic Warfare', score: 98540, date: '2023-04-05' },
   { id: '2', rank: 2, player: 'EpicGamer42', game: 'Cosmic Warfare', score: 87220, date: '2023-04-07' },
@@ -30,29 +22,68 @@ const SAMPLE_DATA: ScoreEntry[] = [
   { id: '12', rank: 12, player: 'ThunderBolt', game: 'Medieval Kingdom', score: 39740, date: '2023-04-01' },
 ];
 
+// Function to sort and rank scores
+const sortAndRankScores = (scores: ScoreEntry[]): ScoreEntry[] => {
+  return [...scores]
+    .sort((a, b) => b.score - a.score)
+    .map((entry, index) => ({ ...entry, rank: index + 1 }));
+};
+
 const Leaderboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedGame, setSelectedGame] = useState<string | null>(searchParams.get('game'));
   const [leaderboardData, setLeaderboardData] = useState<ScoreEntry[]>([]);
+  const [allScores, setAllScores] = useState<ScoreEntry[]>([]);
   
+  // Initialize with sample data and localStorage data
   useEffect(() => {
-    // Filter data based on selected game
+    // Get scores from localStorage (if any)
+    const storedScores = JSON.parse(localStorage.getItem('leaderboardScores') || '[]');
+    
+    // Combine sample data with user-submitted scores
+    const combinedScores = [...SAMPLE_DATA, ...storedScores];
+    
+    // Set all scores with proper ranking
+    setAllScores(sortAndRankScores(combinedScores));
+  }, []);
+  
+  // Filter scores based on selected game
+  useEffect(() => {
     if (selectedGame) {
       setLeaderboardData(
-        SAMPLE_DATA.filter(entry => entry.game === selectedGame)
+        allScores.filter(entry => entry.game === selectedGame)
           .map((entry, index) => ({ ...entry, rank: index + 1 }))
       );
-    } else {
-      setLeaderboardData(SAMPLE_DATA);
-    }
-    
-    // Update URL with selected game
-    if (selectedGame) {
       setSearchParams({ game: selectedGame });
     } else {
+      setLeaderboardData(allScores);
       setSearchParams({});
     }
-  }, [selectedGame, setSearchParams]);
+  }, [selectedGame, allScores, setSearchParams]);
+
+  // Listen for score submission events
+  useEffect(() => {
+    const handleScoreSubmitted = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const newScore = customEvent.detail;
+      
+      if (newScore) {
+        console.log("New score received on leaderboard:", newScore);
+        
+        // Add new score to all scores and re-rank
+        setAllScores(prevScores => {
+          const updatedScores = [...prevScores, newScore];
+          return sortAndRankScores(updatedScores);
+        });
+      }
+    };
+    
+    window.addEventListener('scoreSubmitted', handleScoreSubmitted);
+    
+    return () => {
+      window.removeEventListener('scoreSubmitted', handleScoreSubmitted);
+    };
+  }, []);
 
   const handleSelectGame = (game: string | null) => {
     setSelectedGame(game);

@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   game: z.string({
@@ -34,7 +35,8 @@ const formSchema = z.object({
   }),
 });
 
-const GAMES = [
+// Use this array in both ScoreForm and Leaderboard
+export const GAMES = [
   "Cosmic Warfare",
   "Dragon Quest Legends",
   "Velocity Racer",
@@ -43,8 +45,12 @@ const GAMES = [
   "Medieval Kingdom"
 ];
 
+// Event bus for real-time updates
+export const scoreSubmitEvent = new CustomEvent('scoreSubmitted', { detail: null });
+
 const ScoreForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,9 +64,29 @@ const ScoreForm = () => {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     
+    // Generate a unique ID for the new score entry
+    const newScoreEntry = {
+      id: Date.now().toString(),
+      player: data.playerName,
+      game: data.game,
+      score: data.score,
+      date: new Date().toISOString().split('T')[0], // Format as YYYY-MM-DD
+      rank: 0, // Will be calculated on the leaderboard
+    };
+    
     // Simulate API call with timeout
     setTimeout(() => {
-      console.log("Submitted score:", data);
+      console.log("Submitted score:", newScoreEntry);
+      
+      // Store in localStorage for persistence between refreshes
+      const existingScores = JSON.parse(localStorage.getItem('leaderboardScores') || '[]');
+      const updatedScores = [...existingScores, newScoreEntry];
+      localStorage.setItem('leaderboardScores', JSON.stringify(updatedScores));
+      
+      // Create and dispatch custom event with the new score
+      scoreSubmitEvent.detail = newScoreEntry;
+      window.dispatchEvent(scoreSubmitEvent);
+      
       toast.success("Score submitted successfully!");
       
       // Reset the form properly with complete defaultValues
@@ -71,6 +97,9 @@ const ScoreForm = () => {
       });
       
       setIsSubmitting(false);
+      
+      // Redirect to leaderboard to see the new score
+      navigate('/leaderboard');
     }, 1500);
   };
 
