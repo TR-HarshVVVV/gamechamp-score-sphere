@@ -29,6 +29,17 @@ const sortAndRankScores = (scores: ScoreEntry[]): ScoreEntry[] => {
     .map((entry, index) => ({ ...entry, rank: index + 1 }));
 };
 
+// Function to notify other components of leaderboard changes
+const broadcastLeaderboardUpdate = (scores: ScoreEntry[]) => {
+  // Create a custom event for leaderboard updates
+  const leaderboardUpdateEvent = new CustomEvent('leaderboardUpdate', { 
+    detail: scores 
+  });
+  
+  // Dispatch the event
+  window.dispatchEvent(leaderboardUpdateEvent);
+};
+
 const Leaderboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedGame, setSelectedGame] = useState<string | null>(searchParams.get('game'));
@@ -44,7 +55,11 @@ const Leaderboard = () => {
     const combinedScores = [...SAMPLE_DATA, ...storedScores];
     
     // Set all scores with proper ranking
-    setAllScores(sortAndRankScores(combinedScores));
+    const rankedScores = sortAndRankScores(combinedScores);
+    setAllScores(rankedScores);
+    
+    // Broadcast the initial leaderboard state for other components
+    broadcastLeaderboardUpdate(rankedScores);
   }, []);
   
   // Filter scores based on selected game
@@ -72,8 +87,12 @@ const Leaderboard = () => {
         
         // Add new score to all scores and re-rank
         setAllScores(prevScores => {
-          const updatedScores = [...prevScores, newScore];
-          return sortAndRankScores(updatedScores);
+          const updatedScores = sortAndRankScores([...prevScores, newScore]);
+          
+          // Broadcast the updated leaderboard
+          broadcastLeaderboardUpdate(updatedScores);
+          
+          return updatedScores;
         });
       }
     };

@@ -5,8 +5,13 @@ import { ChevronRight, Trophy, Sparkles, Zap, Star, Crown, ArrowUpRight, Medal, 
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { ScoreEntry } from '@/components/leaderboard/LeaderboardTable';
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  topPlayers: ScoreEntry[];
+}
+
+const HeroSection = ({ topPlayers = [] }: HeroSectionProps) => {
   const [animateCount, setAnimateCount] = useState(false);
   const [playerCount, setPlayerCount] = useState(0);
   const [activeCard, setActiveCard] = useState(0);
@@ -42,47 +47,44 @@ const HeroSection = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveCard((prev) => (prev + 1) % 3);
+      setActiveCard((prev) => (prev + 1) % Math.min(topPlayers.length, 3));
     }, 3000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [topPlayers.length]);
 
-  const topPlayers = [
-    { 
-      name: "NinjaWarrior", 
-      score: 98540, 
-      game: "Cosmic Warfare", 
-      rank: 1, 
-      icon: <Trophy className="h-5 w-5 text-yellow-400" />,
-      gamesPlayed: 312,
-      winRate: "87%",
-      color: "from-yellow-400 to-amber-500",
-      badgeColor: "bg-yellow-400/20 text-yellow-400"
-    },
-    { 
-      name: "EpicGamer42", 
-      score: 87220, 
-      game: "Cosmic Warfare", 
-      rank: 2,
-      icon: <Medal className="h-5 w-5 text-gray-300" />,
-      gamesPlayed: 278,
-      winRate: "82%",
-      color: "from-gray-300 to-gray-400",
-      badgeColor: "bg-gray-400/20 text-gray-300"
-    },
-    { 
-      name: "ProSniper", 
-      score: 76890, 
-      game: "Dragon Quest Legends", 
-      rank: 3,
-      icon: <Medal className="h-5 w-5 text-amber-700" />,
-      gamesPlayed: 245,
-      winRate: "79%",
-      color: "from-amber-700 to-amber-600",
-      badgeColor: "bg-amber-700/20 text-amber-700"
-    }
-  ];
+  // Map player data to enhanced display format
+  const enhancedTopPlayers = topPlayers.map((player, index) => {
+    const icons = [
+      <Trophy key="trophy" className="h-5 w-5 text-yellow-400" />,
+      <Medal key="silver" className="h-5 w-5 text-gray-300" />,
+      <Medal key="bronze" className="h-5 w-5 text-amber-700" />
+    ];
+    
+    const colors = [
+      "from-yellow-400 to-amber-500",
+      "from-gray-300 to-gray-400",
+      "from-amber-700 to-amber-600"
+    ];
+    
+    const badgeColors = [
+      "bg-yellow-400/20 text-yellow-400",
+      "bg-gray-400/20 text-gray-300",
+      "bg-amber-700/20 text-amber-700"
+    ];
+    
+    return {
+      name: player.player,
+      score: player.score,
+      game: player.game,
+      rank: index + 1,
+      icon: icons[Math.min(index, 2)],
+      gamesPlayed: Math.floor(Math.random() * 100) + 200, // Placeholder data
+      winRate: `${Math.floor(Math.random() * 15) + 75}%`, // Placeholder data
+      color: colors[Math.min(index, 2)],
+      badgeColor: badgeColors[Math.min(index, 2)]
+    };
+  });
 
   return (
     <div className="relative overflow-hidden bg-background pb-24 pt-24">
@@ -171,79 +173,83 @@ const HeroSection = () => {
                   </p>
                   
                   <div className="space-y-3">
-                    {topPlayers.map((player, index) => (
-                      <HoverCard key={player.name}>
-                        <HoverCardTrigger asChild>
-                          <div 
-                            className={`flex justify-between p-4 rounded-lg transition-all duration-500 cursor-pointer relative overflow-hidden ${activeCard === index ? 'scale-105' : 'scale-100'}`}
-                            style={{
-                              background: activeCard === index ? 
-                                `linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(217, 70, 239, 0.2))` : 
-                                'rgba(255, 255, 255, 0.05)'
-                            }}
-                          >
-                            {activeCard === index && (
-                              <div className="absolute inset-0 bg-gradient-to-r from-game-primary/10 via-game-accent/10 to-game-secondary/10 animate-pulse"></div>
-                            )}
-                            
-                            <div className="flex items-center gap-3 z-10">
-                              <div className={`flex items-center justify-center h-8 w-8 rounded-full bg-${player.badgeColor}`}>
+                    {enhancedTopPlayers.length > 0 ? (
+                      enhancedTopPlayers.map((player, index) => (
+                        <HoverCard key={player.name + index}>
+                          <HoverCardTrigger asChild>
+                            <div 
+                              className={`flex justify-between p-4 rounded-lg transition-all duration-500 cursor-pointer relative overflow-hidden ${activeCard === index ? 'scale-105' : 'scale-100'}`}
+                              style={{
+                                background: activeCard === index ? 
+                                  `linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(217, 70, 239, 0.2))` : 
+                                  'rgba(255, 255, 255, 0.05)'
+                              }}
+                            >
+                              {activeCard === index && (
+                                <div className="absolute inset-0 bg-gradient-to-r from-game-primary/10 via-game-accent/10 to-game-secondary/10 animate-pulse"></div>
+                              )}
+                              
+                              <div className="flex items-center gap-3 z-10">
+                                <div className={`flex items-center justify-center h-8 w-8 rounded-full ${player.badgeColor}`}>
+                                  {player.icon}
+                                </div>
+                                <div className="text-left">
+                                  <div className="font-medium text-game-secondary flex items-center">
+                                    {player.name}
+                                    {index === 0 && <Crown className="h-4 w-4 text-yellow-400 ml-1" />}
+                                  </div>
+                                  <div className="text-xs text-white/60">{player.game}</div>
+                                </div>
+                              </div>
+                              
+                              <div className={`font-mono text-lg font-bold ${activeCard === index ? 'text-white scale-110 transition-all duration-300' : 'text-white/80'}`}>
+                                {player.score.toLocaleString()}
+                              </div>
+                              
+                              {activeCard === index && (
+                                <>
+                                  <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-game-accent to-transparent"></div>
+                                  <div className="absolute -right-1 bottom-1 rounded-full bg-game-accent/30 w-2 h-2 animate-pulse"></div>
+                                </>
+                              )}
+                            </div>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80 bg-card/95 backdrop-blur border-white/10">
+                            <div className="flex justify-between">
+                              <div>
+                                <h4 className="font-semibold">{player.name}</h4>
+                                <p className="text-sm text-muted-foreground">Top player in {player.game}</p>
+                              </div>
+                              <div className={`p-2 rounded-full ${player.badgeColor}`}>
                                 {player.icon}
                               </div>
-                              <div className="text-left">
-                                <div className="font-medium text-game-secondary flex items-center">
-                                  {player.name}
-                                  {index === 0 && <Crown className="h-4 w-4 text-yellow-400 ml-1" />}
-                                </div>
-                                <div className="text-xs text-white/60">{player.game}</div>
+                            </div>
+                            <div className="mt-3 pt-3 border-t border-white/10">
+                              <div className="grid grid-cols-2 gap-3">
+                                <Card className="bg-white/5 border-white/10">
+                                  <CardContent className="p-3 text-center">
+                                    <p className="text-xs text-white/60">Games Played</p>
+                                    <p className="text-lg font-medium">{player.gamesPlayed}</p>
+                                  </CardContent>
+                                </Card>
+                                <Card className="bg-white/5 border-white/10">
+                                  <CardContent className="p-3 text-center">
+                                    <p className="text-xs text-white/60">Win Rate</p>
+                                    <p className="text-lg font-medium">{player.winRate}</p>
+                                  </CardContent>
+                                </Card>
                               </div>
+                              <Button variant="ghost" size="sm" className="w-full mt-3 text-xs text-game-accent gap-1 group">
+                                View full profile
+                                <ArrowUpRight className="h-3 w-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                              </Button>
                             </div>
-                            
-                            <div className={`font-mono text-lg font-bold ${activeCard === index ? 'text-white scale-110 transition-all duration-300' : 'text-white/80'}`}>
-                              {player.score.toLocaleString()}
-                            </div>
-                            
-                            {activeCard === index && (
-                              <>
-                                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-game-accent to-transparent"></div>
-                                <div className="absolute -right-1 bottom-1 rounded-full bg-game-accent/30 w-2 h-2 animate-pulse"></div>
-                              </>
-                            )}
-                          </div>
-                        </HoverCardTrigger>
-                        <HoverCardContent className="w-80 bg-card/95 backdrop-blur border-white/10">
-                          <div className="flex justify-between">
-                            <div>
-                              <h4 className="font-semibold">{player.name}</h4>
-                              <p className="text-sm text-muted-foreground">Top player in {player.game}</p>
-                            </div>
-                            <div className={`p-2 rounded-full ${player.badgeColor}`}>
-                              {player.icon}
-                            </div>
-                          </div>
-                          <div className="mt-3 pt-3 border-t border-white/10">
-                            <div className="grid grid-cols-2 gap-3">
-                              <Card className="bg-white/5 border-white/10">
-                                <CardContent className="p-3 text-center">
-                                  <p className="text-xs text-white/60">Games Played</p>
-                                  <p className="text-lg font-medium">{player.gamesPlayed}</p>
-                                </CardContent>
-                              </Card>
-                              <Card className="bg-white/5 border-white/10">
-                                <CardContent className="p-3 text-center">
-                                  <p className="text-xs text-white/60">Win Rate</p>
-                                  <p className="text-lg font-medium">{player.winRate}</p>
-                                </CardContent>
-                              </Card>
-                            </div>
-                            <Button variant="ghost" size="sm" className="w-full mt-3 text-xs text-game-accent gap-1 group">
-                              View full profile
-                              <ArrowUpRight className="h-3 w-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                            </Button>
-                          </div>
-                        </HoverCardContent>
-                      </HoverCard>
-                    ))}
+                          </HoverCardContent>
+                        </HoverCard>
+                      ))
+                    ) : (
+                      <div className="text-center p-6 text-white/50">No scores available yet</div>
+                    )}
                     
                     <Link to="/leaderboard" className="block mt-6">
                       <Button variant="ghost" size="sm" className="w-full text-white/70 hover:text-white gap-1 group border border-white/10 bg-white/5 hover:bg-white/10">
