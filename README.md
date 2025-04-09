@@ -130,5 +130,5 @@ Special thanks to the open-source community and all contributors who help improv
 
 ---
 
-> Made with ❤️ by [@Nilesh896](https://github.com/Nilesh896)
+> Made  by [@Nilesh896](https://github.com/Nilesh896)
 
